@@ -1,0 +1,13 @@
+{
+  "total_coins": 362,
+  "total_distance": 0,
+  "car_stats": {
+    "acceleration": 1.0,
+    "speed": 1.0,
+    "traction": 1.0,
+    "fuel_efficiency": 1.0,
+    "suspension": 1.0
+  },
+  "achievements": {},
+  "high_scores": {}
+}

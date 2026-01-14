@@ -1,0 +1,110 @@
+import random
+
+#Authorised Players
+authorised_players = ["Alice", "Bob", "Katarina", "David"]
+
+#Player Authentication
+player1 = input("Enter Player 1 name: ")
+player2 = input("Enter Player 2 name: ")
+
+if player1 not in authorised_players or player2 not in authorised_players:
+    print("One or both players are not authorised.")
+    exit()
+
+#Initialise Scores
+player1_score = 0
+player2_score = 0
+
+#Play 5 Rounds
+for round_num in range(1, 6):
+    print(f"\n--- Round {round_num} ---")
+    for player in [(player1, "Player 1"), (player2, "Player 2")]:
+        name = player[0]
+        dice1 = random.randint(1, 6)
+        dice2 = random.randint(1, 6)
+        total = dice1 + dice2
+
+        print(f"{name} rolled {dice1} and {dice2} (Total = {total})")
+
+        # Even/Odd rule
+        if total % 2 == 0:
+            total += 10
+        else:
+            total -= 5
+
+        # Double rule
+        if dice1 == dice2:
+            print(f"{name} rolled a double! Extra die roll...")
+            extra = random.randint(1, 6)
+            print(f"Extra die: {extra}")
+            total += extra
+
+        # Update player scores
+        if name == player1:
+            player1_score += total
+            if player1_score < 0:
+                player1_score = 0
+        else:
+            player2_score += total
+            if player2_score < 0:
+                player2_score = 0
+
+    print(f"Scores after round {round_num}: {player1} = {player1_score}, {player2} = {player2_score}")
+
+# Check Winner
+if player1_score == player2_score:
+    print("\nScores are tied! Rolling until someone wins...")
+    while True:
+        roll1 = random.randint(1, 6)
+        roll2 = random.randint(1, 6)
+        print(f"{player1} rolled {roll1}, {player2} rolled {roll2}")
+        if roll1 != roll2:
+            if roll1 > roll2:
+                winner = player1
+                win_score = player1_score
+            else:
+                winner = player2
+                win_score = player2_score
+            break
+else:
+    if player1_score > player2_score:
+        winner = player1
+        win_score = player1_score
+    else:
+        winner = player2
+        win_score = player2_score
+
+print(f"\n🏆 Winner is {winner} with a score of {win_score}!")
+
+#Save to File 
+with open("scores.txt", "a") as file:
+    file.write(f"{winner},{win_score}\n")
+
+#Display Top 5 Scores 
+scores = []
+
+# Read all previous scores from the file
+with open("scores.txt", "r") as file:
+    for line in file:
+        parts = line.strip().split(",")
+        name = parts[0]
+        score = int(parts[1])
+        scores.append([name, score])
+
+# Simple sorting (Bubble Sort style)
+for i in range(len(scores)):
+    for j in range(i + 1, len(scores)):
+        if scores[j][1] > scores[i][1]:
+            # swap the two scores
+            temp = scores[i]
+            scores[i] = scores[j]
+            scores[j] = temp
+
+# Display only the top 5 scores
+print("\nTop 5 Scores:")
+count = 0
+for entry in scores:
+    print(entry[0], "-", entry[1])
+    count = count + 1
+    if count == 5:
+        break
